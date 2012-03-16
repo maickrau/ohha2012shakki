@@ -1,0 +1,11 @@
+pelilauta
+ nappula[8][8] nappula
+ boolean vuoro
+
+nappula
+ boolean vari
+
+nappulat(moku/heppa/jne) extends nappula
+ boolean[8][8] mahdollisetSiirrot(pelilauta)
+
+
