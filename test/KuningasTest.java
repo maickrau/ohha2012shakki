@@ -1,16 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import org.junit.*;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author mcrautia
- */
 public class KuningasTest {
+    
+    Kuningas kuningas;
+    PeliLauta lauta;
+    boolean[][] siirrot;
     
     public KuningasTest() {
     }
@@ -25,14 +20,80 @@ public class KuningasTest {
     
     @Before
     public void setUp() {
+        lauta = new PeliLauta();
+        kuningas = new Kuningas(true, 3, 5);
+        lauta.nappulaTassa[kuningas.sijaintiY][kuningas.sijaintiX] = kuningas;
+        siirrot = kuningas.mahdollisetSiirrot(lauta);
     }
     
     @After
     public void tearDown() {
     }
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    
+    @Test
+    public void liikkuuYhdenVasemmalle()
+    {
+        int alkuX = kuningas.sijaintiX;
+        int alkuY = kuningas.sijaintiY;
+        if (alkuX > 0)
+        {
+            assertTrue(lauta.siirraNappulaa(alkuX, alkuY, alkuX-1, alkuY));
+            assertTrue(lauta.nappulaTassa[alkuY][alkuX] == null);
+            assertTrue(kuningas.sijaintiY == alkuY);
+            assertTrue(kuningas.sijaintiX == alkuX-1);
+        }
+        assertTrue(lauta.nappulaTassa[kuningas.sijaintiY][kuningas.sijaintiX] == kuningas);
+    }
+    
+    @Test
+    public void eiLiikuKahtaVasemmalle()
+    {
+        int alkuX = kuningas.sijaintiX;
+        int alkuY = kuningas.sijaintiY;
+        if (alkuX > 1)
+        {
+            assertFalse(lauta.siirraNappulaa(alkuX, alkuY, alkuX-2, alkuY));
+            assertTrue(lauta.nappulaTassa[alkuY][alkuX] == kuningas);
+        }
+        assertTrue(lauta.nappulaTassa[kuningas.sijaintiY][kuningas.sijaintiX] == kuningas);
+        assertTrue(kuningas.sijaintiY == alkuY);
+        assertTrue(kuningas.sijaintiX == alkuX);
+    }
+    
+    @Test
+    public void voiLiikkuaYhdenRuudun()
+    {
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                if ((Math.abs(x-kuningas.sijaintiX) <= 1 && Math.abs(y-kuningas.sijaintiY) <= 1)
+                   && (x != kuningas.sijaintiX || y != kuningas.sijaintiY))
+                {
+                    assertTrue(siirrot[y][x]);
+                }
+            }
+        }
+    }
+    
+    @Test
+    public void eiVoiLiikkuaMontaRuutua()
+    {
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                if (Math.abs(x-kuningas.sijaintiX) > 1 && Math.abs(y-kuningas.sijaintiY) > 1)
+                {
+                    assertFalse(siirrot[y][x]);
+                }
+            }
+        }
+    }
+    
+    @Test
+    public void eiVoiSyodaItseaan()
+    {
+        assertFalse(siirrot[kuningas.sijaintiY][kuningas.sijaintiX]);
+    }
 }
