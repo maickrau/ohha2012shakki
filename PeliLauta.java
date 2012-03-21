@@ -11,18 +11,20 @@ public class PeliLauta
     }
     public boolean siirraNappulaa(int alkuX, int alkuY, int loppuX, int loppuY)
     {
-        if (nappulaTassa[alkuX][alkuY] == null)
+        if (nappulaTassa[alkuY][alkuX] == null)
         {
             return false;
         }
-        if (nappulaTassa[alkuX][alkuY].mahdollisetSiirrot(this)[loppuX][loppuY])
+        if (nappulaTassa[alkuY][alkuX].mahdollisetSiirrot(this)[loppuY][loppuX])
         {
-            if (nappulaTassa[loppuX][loppuY] != null)
+            if (nappulaTassa[loppuY][loppuX] != null)
             {
-                nappulaSoiNappulan(nappulaTassa[alkuX][alkuY], nappulaTassa[loppuX][loppuY]);
+                nappulaSoiNappulan(nappulaTassa[alkuY][alkuX], nappulaTassa[loppuY][loppuX]);
             }
-            nappulaTassa[loppuX][loppuY] = nappulaTassa[alkuX][alkuY];
-            nappulaTassa[alkuX][alkuY] = null;
+            nappulaTassa[loppuY][loppuX] = nappulaTassa[alkuY][alkuX];
+            nappulaTassa[loppuY][loppuX].sijaintiX = loppuX;
+            nappulaTassa[loppuY][loppuX].sijaintiY = loppuY;
+            nappulaTassa[alkuY][alkuX] = null;
             return true;
         }
         return false;
