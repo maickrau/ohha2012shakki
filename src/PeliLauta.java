@@ -22,8 +22,7 @@ public class PeliLauta
                 nappulaSoiNappulan(nappulaTassa[alkuY][alkuX], nappulaTassa[loppuY][loppuX]);
             }
             nappulaTassa[loppuY][loppuX] = nappulaTassa[alkuY][alkuX];
-            nappulaTassa[loppuY][loppuX].sijaintiX = loppuX;
-            nappulaTassa[loppuY][loppuX].sijaintiY = loppuY;
+            nappulaTassa[loppuY][loppuX].nappulaSiirtyi(this, loppuX, loppuY);
             nappulaTassa[alkuY][alkuX] = null;
             return true;
         }

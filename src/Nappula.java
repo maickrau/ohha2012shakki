@@ -10,4 +10,5 @@ abstract public class Nappula
         this.sijaintiY = sijaintiY;
     }
     abstract boolean[][] mahdollisetSiirrot(PeliLauta lauta);
+    abstract void nappulaSiirtyi(PeliLauta lauta, int sijantiX, int sijaintiY);
 }

@@ -1,9 +1,18 @@
 
 public class Kuningas extends Nappula
 {
+    boolean siirtynyt;
     public Kuningas(boolean puoli, int sijaintiX, int sijaintiY)
     {
         super(puoli, sijaintiX, sijaintiY);
+        siirtynyt = false;
+    }
+    @Override
+    public void nappulaSiirtyi(PeliLauta lauta, int sijaintiX, int sijaintiY)
+    {
+        this.sijaintiX = sijaintiX;
+        this.sijaintiY = sijaintiY;
+        siirtynyt = true;
     }
     @Override
     public boolean[][] mahdollisetSiirrot(PeliLauta lauta)
@@ -34,6 +43,7 @@ public class Kuningas extends Nappula
                 }
             }
         }
+        //tornitus
         return tulos;
     }
 }
