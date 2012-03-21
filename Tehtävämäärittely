@@ -1,8 +1,11 @@
 Aihe: shakki
 käyttäjät: valkoinen pelaaja ja musta pelaaja
 pelaajan toiminnat:
- -siirrä nappulaa
+ -nappulan siirto
+  -tornitus
+  -en passant
   -vihollisen nappulan syönti
- -viimeiselle riville päässeen sotilaan ylennys
+  -viimeiselle riville päässeen sotilaan ylennys
  -pelin tallentaminen
  -tallennetun pelin avaaminen
+
