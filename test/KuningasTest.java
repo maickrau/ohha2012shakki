@@ -21,8 +21,7 @@ public class KuningasTest {
     @Before
     public void setUp() {
         lauta = new PeliLauta();
-        kuningas = new Kuningas(true, 3, 5);
-        lauta.nappulaTassa[kuningas.sijaintiY][kuningas.sijaintiX] = kuningas;
+        kuningas = (Kuningas)lauta.asetaNappula(new Kuningas(true), 3, 5);
         siirrot = kuningas.mahdollisetSiirrot(lauta);
     }
     
