@@ -12,6 +12,10 @@ public class PeliLauta
      * true on valkoisen vuoro, false mustan
      */
     boolean kummanVuoro;
+    /**
+     * sotilas aloitti tuplasiirrolla, en passant mahdollista sarakkeella n
+     */
+    int viimeSiirtoOliSotilaanTupla;
     public PeliLauta()
     {
         nappulaTassa = new Nappula[8][8];
@@ -51,6 +55,39 @@ public class PeliLauta
             return true;
         }
         return false;
+    }
+    /**
+     * Pelaaja siirtää nappulaa, voi siirtää vain omalla vuorollaan
+     * @param alkuX   alkusijainti
+     * @param alkuY
+     * @param loppuX  loppusijainti
+     * @param loppuY
+     * @return        true jos siirto onnistui, false jos ei
+     */
+    public boolean pelaaVuoro(int alkuX, int alkuY, int loppuX, int loppuY)
+    {
+        if (nappulaTassa[alkuY][alkuX] == null)
+        {
+            return false;
+        }
+        if (nappulaTassa[alkuY][alkuX].puoli != kummanVuoro)
+        {
+            return false;
+        }
+        if (!siirraNappulaa(alkuX, alkuY, loppuX, loppuY))
+        {
+            return false;
+        }
+        viimeSiirtoOliSotilaanTupla = -1;
+        if (nappulaTassa[loppuX][loppuY] instanceof Sotilas)
+        {
+            if (alkuY-loppuY == -2 || alkuY-loppuY == 2)
+            {
+                viimeSiirtoOliSotilaanTupla = alkuX;
+            }
+        }
+        kummanVuoro = !kummanVuoro;
+        return true;
     }
     /**
      * asettaa nappulat aloituspaikoilleen ja antaa vuoron valkoiselle

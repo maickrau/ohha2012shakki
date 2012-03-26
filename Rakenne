@@ -6,11 +6,22 @@ nappula
  boolean vari
  boolean[8][8] mahdollisetSiirrot(pelilauta)
 
-nappulat(sotilas/hevonen/jne) extends nappula
+sotilas & hevonen extends nappula
 
-torni extends nappula
+suoraanMenevaNappula extends nappula
+
+lahetti & kuningatar extends suoraanMenevaNappula
+
+torni extends suoraanMenevanappula
  boolean siirtynyt (tornitus)
 
 kuningas extends nappula
  boolean siirtynyt (tornitus)
 
+UI
+ tietää pelilaudan
+ voi:
+  -kysyä mahdollisia siirtoja
+  -tehdä siirtoja
+  -tallentaa pelin
+  -ladata pelin
