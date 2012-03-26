@@ -3,7 +3,7 @@ abstract public class Nappula
     /**
      * nappulan mahdolliset siirrot
      */
-    boolean[][] mahdollisetSiirrot;
+    public boolean[][] mahdollisetSiirrot;
     /**
      * nappulan väri, true on valkoinen, false on musta
      */

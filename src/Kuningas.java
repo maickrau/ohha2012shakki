@@ -21,11 +21,11 @@ public class Kuningas extends Nappula
         //tornitus
         if (sijaintiX == this.sijaintiX-2)
         {
-            lauta.pakotaNappulaSiirtymaan(0, sijaintiY, sijaintiX-1, sijaintiY);
+            lauta.pakotaNappulaSiirtymaan(0, sijaintiY, sijaintiX+1, sijaintiY);
         }
         if (sijaintiX == this.sijaintiX+2)
         {
-            lauta.pakotaNappulaSiirtymaan(7, sijaintiY, sijaintiX+1, sijaintiY);
+            lauta.pakotaNappulaSiirtymaan(7, sijaintiY, sijaintiX-1, sijaintiY);
         }
         lauta.nappulaTassa[this.sijaintiY][this.sijaintiX] = null;
         this.sijaintiX = sijaintiX;
@@ -70,12 +70,20 @@ public class Kuningas extends Nappula
      */
     private void tarkistaTornitus(PeliLauta lauta)
     {
-        if (!liikkunut)
+        if (liikkunut)
         {
-            boolean tornitusMahdollista = true;
-            if (lauta.nappulaTassa[sijaintiY][0] != null)
+            return;
+        }
+        if (lauta.onkoUhattu(puoli, sijaintiX, sijaintiY))
+        {
+            return;
+        }
+        boolean tornitusMahdollista = true;
+        if (lauta.nappulaTassa[sijaintiY][0] != null)
+        {
+            if (lauta.nappulaTassa[sijaintiY][0] instanceof Torni)
             {
-                if (lauta.nappulaTassa[sijaintiY][0] instanceof Torni)
+                if (lauta.nappulaTassa[sijaintiY][0].puoli == this.puoli)
                 {
                     if (((Torni)lauta.nappulaTassa[sijaintiY][0]).liikkunut)
                     {
@@ -98,16 +106,19 @@ public class Kuningas extends Nappula
                     }
                 }
             }
-            tornitusMahdollista = true;
-            if (lauta.nappulaTassa[sijaintiY][7] != null)
+        }
+        tornitusMahdollista = true;
+        if (lauta.nappulaTassa[sijaintiY][7] != null)
+        {
+            if (lauta.nappulaTassa[sijaintiY][7] instanceof Torni)
             {
-                if (lauta.nappulaTassa[sijaintiY][7] instanceof Torni)
+                if (lauta.nappulaTassa[sijaintiY][7].puoli == this.puoli)
                 {
                     if (((Torni)lauta.nappulaTassa[sijaintiY][7]).liikkunut)
                     {
                         tornitusMahdollista = false;
                     }
-                    for (int x = sijaintiX+1; x < 8; x++)
+                    for (int x = sijaintiX+1; x < 7; x++)
                     {
                         if (lauta.nappulaTassa[sijaintiY][x] != null)
                         {

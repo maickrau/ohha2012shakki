@@ -25,7 +25,7 @@ public class PeliLauta
      */
     public void pakotaNappulaSiirtymaan(int alkuX, int alkuY, int loppuX, int loppuY)
     {
-        nappulaTassa[loppuY][loppuX].nappulaSiirtyi(this, loppuX, loppuY);
+        nappulaTassa[alkuY][alkuX].nappulaSiirtyi(this, loppuX, loppuY);
     }
     /**
      * Tarkistaa voiko nappula siirtyä, jos voi niin siirtää sen
@@ -89,7 +89,7 @@ public class PeliLauta
      */
     public Nappula asetaNappula(Nappula tama, int sijaintiX, int sijaintiY)
     {
-        nappulaTassa[sijaintiX][sijaintiY] = tama;
+        nappulaTassa[sijaintiY][sijaintiX] = tama;
         tama.sijaintiX = sijaintiX;
         tama.sijaintiY = sijaintiY;
         return tama;

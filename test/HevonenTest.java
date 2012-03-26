@@ -33,6 +33,14 @@ public class HevonenTest {
     }
     
     @Test
+    public void heppaEiVoiSyodaItseaan()
+    {
+        assertFalse(ekaHeppa.mahdollisetSiirrot(lauta)[ekaHeppa.sijaintiY][ekaHeppa.sijaintiX]);
+        assertFalse(tokaHeppa.mahdollisetSiirrot(lauta)[tokaHeppa.sijaintiY][tokaHeppa.sijaintiX]);
+        assertFalse(vihollisHeppa.mahdollisetSiirrot(lauta)[vihollisHeppa.sijaintiY][vihollisHeppa.sijaintiX]);
+    }
+    
+    @Test
     public void heppaEiVoiSyodaOmaa()
     {
         assertFalse(ekaHeppa.mahdollisetSiirrot(lauta)[4][5]);
@@ -60,10 +68,10 @@ public class HevonenTest {
     public void heppaSyoVihollisenJaLiikkuu()
     {
         assertTrue(lauta.siirraNappulaa(3, 3, 5, 2));
-        assertTrue(ekaHeppa.sijaintiX == 2);
-        assertTrue(ekaHeppa.sijaintiY == 5);
         assertTrue(lauta.nappulaTassa[3][3] == null);
-        assertTrue(lauta.nappulaTassa[5][2] == ekaHeppa);
+        assertTrue(lauta.nappulaTassa[2][5] == ekaHeppa);
+        assertTrue(ekaHeppa.sijaintiX == 5);
+        assertTrue(ekaHeppa.sijaintiY == 2);
     }
 
     @Test

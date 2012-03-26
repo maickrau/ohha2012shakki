@@ -25,7 +25,7 @@ abstract public class SuoraanMenevaNappula extends Nappula {
             mahdollisetSiirrot[y][x] = true;
             if (lauta.nappulaTassa[y][x] != null)
             {
-                if (lauta.nappulaTassa[y][x].puoli != puoli)
+                if (lauta.nappulaTassa[y][x].puoli == puoli)
                 {
                     mahdollisetSiirrot[y][x] = false;
                 }
