@@ -24,8 +24,15 @@ abstract public class Nappula
         this.sijaintiY = sijaintiY;
         mahdollisetSiirrot = new boolean[8][8];
     }
-    public void nappulaKuoli()
+    public void nappulaKuoli(PeliLauta lauta)
     {
+        if (sijaintiX >= 0 && sijaintiX < 8 && sijaintiY >= 0 && sijaintiY < 8)
+        {
+            if (lauta.nappulaTassa[sijaintiY][sijaintiX] == this)
+            {
+                lauta.nappulaTassa[sijaintiY][sijaintiX] = null;
+            }
+        }
         sijaintiX = -10;
         sijaintiY = -10;
     }

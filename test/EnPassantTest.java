@@ -41,26 +41,26 @@ public class EnPassantTest {
     public void testaaKuudellaNappulalla()
     {
         lauta.kummanVuoro = false;
-        assertTrue(lauta.pelaaVuoro(3, 6, 3, 4));
-        assertTrue(ekaSotilas.mahdollisetSiirrot(lauta)[5][3]);
+        assertTrue(lauta.pelaaVuoro(1, 6, 1, 4));
+        assertTrue(ekaSotilas.mahdollisetSiirrot(lauta)[5][1]);
         assertTrue(lauta.pelaaVuoro(3, 1, 3, 3));
         assertTrue(kolmasVihollisSotilas.mahdollisetSiirrot(lauta)[2][3]);
-        assertTrue(lauta.pelaaVuoro(1, 6, 1, 4));
-        assertFalse(ekaSotilas.mahdollisetSiirrot(lauta)[5][3]);
-        assertTrue(ekaSotilas.mahdollisetSiirrot(lauta)[5][1]);
+        assertTrue(lauta.pelaaVuoro(3, 6, 3, 4));
+        assertTrue(ekaSotilas.mahdollisetSiirrot(lauta)[5][3]);
+        assertFalse(ekaSotilas.mahdollisetSiirrot(lauta)[5][1]);
         assertTrue(lauta.pelaaVuoro(5, 1, 5, 3));
         assertFalse(kolmasVihollisSotilas.mahdollisetSiirrot(lauta)[2][3]);
         assertTrue(kolmasVihollisSotilas.mahdollisetSiirrot(lauta)[2][5]);
-        assertTrue(lauta.pelaaVuoro(4, 3, 5, 3));
-        assertTrue(tokaSotilas.sijaintiY == -10);
-        assertTrue(tokaSotilas.sijaintiX == -10);
+        assertTrue(lauta.pelaaVuoro(4, 3, 5, 2));
+        assertTrue(kolmasSotilas.sijaintiY == -10);
+        assertTrue(kolmasSotilas.sijaintiX == -10);
         assertFalse(ekaSotilas.mahdollisetSiirrot(lauta)[5][1]);
     }
     
     @Test
     public void eiVoiSyodaTornia()
     {
-        vihollisSotilas.nappulaKuoli();
+        vihollisSotilas.nappulaKuoli(lauta);
         lauta.kummanVuoro = false;
         lauta.asetaNappula(new Torni(false), 1, 6);
         assertTrue(lauta.pelaaVuoro(1, 6, 1, 4));

@@ -119,12 +119,11 @@ public class Sotilas extends Nappula {
     @Override
     public boolean[][] uhatutRuudut(PeliLauta lauta)
     {
-        mahdollisetSiirrot(lauta);
         for (int y = 0; y < 8; y++)
         {
             for (int x = 0; x < 8; x++)
             {
-                uhatutRuudut[y][x] = mahdollisetSiirrot[y][x];
+                uhatutRuudut[y][x] = false;
             }
         }
         int suunta = 1;

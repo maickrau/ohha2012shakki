@@ -1,3 +1,5 @@
+import java.io.*;
+
 public class PeliLauta 
 {
     /**
@@ -25,6 +27,7 @@ public class PeliLauta
         mustaUhkaa = new boolean[8][8];
         valkoinenUhkaa = new boolean[8][8];
         uhkauksetLaskettavaUudestaan = true;
+        viimeSiirtoOliSotilaanTupla = 255;
     }
     /**
      * Pakottaa nappulaa siirtymään riippumatta voisiko se normaalisti siirtyä
@@ -86,8 +89,8 @@ public class PeliLauta
         {
             return false;
         }
-        viimeSiirtoOliSotilaanTupla = -1;
-        if (nappulaTassa[loppuX][loppuY] instanceof Sotilas)
+        viimeSiirtoOliSotilaanTupla = 255;
+        if (nappulaTassa[loppuY][loppuX] instanceof Sotilas)
         {
             if (alkuY-loppuY == -2 || alkuY-loppuY == 2)
             {
@@ -124,7 +127,223 @@ public class PeliLauta
             asetaNappula(new Sotilas(false), x, 6);
         }
         kummanVuoro = true; //valkoisen vuoro
+        viimeSiirtoOliSotilaanTupla = 255;
         laskeUhatutRuudut();
+    }
+    public boolean tallennaLauta(String polku)
+    {
+        File tiedosto = new File(polku);
+        if (!tiedosto.exists())
+        {
+            try
+            {
+                tiedosto.createNewFile();
+            }
+            catch (IOException e)
+            {
+                return false;
+            }
+        }
+        if (!tiedosto.canWrite())
+        {
+            return false;
+        }
+        FileOutputStream out;
+        try
+        {
+            out = new FileOutputStream(tiedosto);
+            out.write(viimeSiirtoOliSotilaanTupla);
+            if (kummanVuoro)
+            {
+                out.write('v');
+            }
+            else
+            {
+                out.write('m');
+            }
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    if (nappulaTassa[y][x] != null)
+                    {
+                        if (nappulaTassa[y][x].puoli)
+                        {
+                            out.write('v');
+                        }
+                        else
+                        {
+                            out.write('m');
+                        }
+                        out.write(nappulaTyypinChari(nappulaTassa[y][x]));
+                        if (nappulaTassa[y][x] instanceof Kuningas)
+                        {
+                            if (((Kuningas)nappulaTassa[y][x]).liikkunut)
+                            {
+                                out.write('k');
+                            }
+                            else
+                            {
+                                out.write('e');
+                            }
+                        }
+                        if (nappulaTassa[y][x] instanceof Torni)
+                        {
+                            if (((Torni)nappulaTassa[y][x]).liikkunut)
+                            {
+                                out.write('k');
+                            }
+                            else
+                            {
+                                out.write('e');
+                            }
+                        }
+                    }
+                    else
+                    {
+                        out.write('n');
+                    }
+                }
+            }
+            out.close();
+            return true;
+        }
+        catch (FileNotFoundException e)
+        {
+            return false;
+        }
+        catch (IOException e)
+        {
+            return false;
+        }
+    }
+    public boolean lataaLauta(String polku)
+    {
+        File tiedosto = new File(polku);
+        if (!tiedosto.canRead())
+        {
+            return false;
+        }
+        FileInputStream in;
+        try
+        {
+            in = new FileInputStream(tiedosto);
+            viimeSiirtoOliSotilaanTupla = in.read();
+            char testi = (char)in.read();
+            if (testi == 'v')
+            {
+                kummanVuoro = true;
+            }
+            else
+            {
+                kummanVuoro = false;
+            }
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    testi = (char)in.read();
+                    if (testi != 'n')
+                    {
+                        boolean puoli = true;
+                        if (testi == 'm')
+                        {
+                            puoli = false;
+                        }
+                        testi = (char)in.read();
+                        Nappula uusNappula = asetaNappula(charinNappula(testi, puoli), x, y);
+                        if (testi == 'K')
+                        {
+                            if ((char)in.read() == 'k')
+                            {
+                                ((Kuningas)uusNappula).liikkunut = true;
+                            }
+                        }
+                        if (testi == 'T')
+                        {
+                            if ((char)in.read() == 'k')
+                            {
+                                ((Torni)uusNappula).liikkunut = true;
+                            }
+                        }
+                    }
+                }
+            }
+            in.close();
+            return true;
+        }
+        catch (FileNotFoundException e)
+        {
+            return false;
+        }
+        catch (IOException e)
+        {
+            return false;
+        }
+    }
+    private Nappula charinNappula(char tama, boolean puoli)
+    {
+        if (tama == 'x' || tama == '?')
+        {
+            return null;
+        }
+        if (tama == 'K')
+        {
+            return new Kuningas(puoli);
+        }
+        if (tama == 'Q')
+        {
+            return new Kuningatar(puoli);
+        }
+        if (tama == 'N')
+        {
+            return new Hevonen(puoli);
+        }
+        if (tama == 'B')
+        {
+            return new Lahetti(puoli);
+        }
+        if (tama == 'T')
+        {
+            return new Torni(puoli);
+        }
+        if (tama == 'P')
+        {
+            return new Sotilas(puoli);
+        }
+        return null;
+    }
+    private char nappulaTyypinChari(Nappula tama)
+    {
+        if (tama == null)
+        {
+            return 'x';
+        }
+        if (tama instanceof Kuningas)
+        {
+            return 'K';
+        }
+        if (tama instanceof Kuningatar)
+        {
+            return 'Q';
+        }
+        if (tama instanceof Hevonen)
+        {
+            return 'N';
+        }
+        if (tama instanceof Lahetti)
+        {
+            return 'B';
+        }
+        if (tama instanceof Torni)
+        {
+            return 'T';
+        }
+        if (tama instanceof Sotilas)
+        {
+            return 'P';
+        }
+        return '?';
     }
     /**
      * asettaa nappulan laudalle ja palauttaa viitteen juuri asetetulle nappulalle
@@ -142,7 +361,7 @@ public class PeliLauta
     }
     public void nappulaSoiNappulan(Nappula syoja, Nappula syoty)
     {
-        syoty.nappulaKuoli();
+        syoty.nappulaKuoli(this);
         //TODO?
     }
     /**
