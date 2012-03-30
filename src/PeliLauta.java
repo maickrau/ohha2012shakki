@@ -5,20 +5,26 @@ public class PeliLauta
      * valkoinen aloittaa alariviltä (kuningas on nappula[0][4]
      * musta yläriviltä (kuningas on nappula[7][4]
      */
-    Nappula[][] nappulaTassa;
-    Nappula valkoisenKuningas;
-    Nappula mustanKuningas;
+    public Nappula[][] nappulaTassa;
+    private Nappula valkoisenKuningas;
+    private Nappula mustanKuningas;
+    private boolean[][] mustaUhkaa;
+    private boolean[][] valkoinenUhkaa;
+    private boolean uhkauksetLaskettavaUudestaan;
     /**
      * true on valkoisen vuoro, false mustan
      */
-    boolean kummanVuoro;
+    public boolean kummanVuoro;
     /**
      * sotilas aloitti tuplasiirrolla, en passant mahdollista sarakkeella n
      */
-    int viimeSiirtoOliSotilaanTupla;
+    public int viimeSiirtoOliSotilaanTupla;
     public PeliLauta()
     {
         nappulaTassa = new Nappula[8][8];
+        mustaUhkaa = new boolean[8][8];
+        valkoinenUhkaa = new boolean[8][8];
+        uhkauksetLaskettavaUudestaan = true;
     }
     /**
      * Pakottaa nappulaa siirtymään riippumatta voisiko se normaalisti siirtyä
@@ -30,6 +36,7 @@ public class PeliLauta
     public void pakotaNappulaSiirtymaan(int alkuX, int alkuY, int loppuX, int loppuY)
     {
         nappulaTassa[alkuY][alkuX].nappulaSiirtyi(this, loppuX, loppuY);
+        uhkauksetLaskettavaUudestaan = true;
     }
     /**
      * Tarkistaa voiko nappula siirtyä, jos voi niin siirtää sen
@@ -52,6 +59,7 @@ public class PeliLauta
                 nappulaSoiNappulan(nappulaTassa[alkuY][alkuX], nappulaTassa[loppuY][loppuX]);
             }
             nappulaTassa[alkuY][alkuX].nappulaSiirtyi(this, loppuX, loppuY);
+            uhkauksetLaskettavaUudestaan = true;
             return true;
         }
         return false;
@@ -116,6 +124,7 @@ public class PeliLauta
             asetaNappula(new Sotilas(false), x, 6);
         }
         kummanVuoro = true; //valkoisen vuoro
+        laskeUhatutRuudut();
     }
     /**
      * asettaa nappulan laudalle ja palauttaa viitteen juuri asetetulle nappulalle
@@ -131,14 +140,73 @@ public class PeliLauta
         tama.sijaintiY = sijaintiY;
         return tama;
     }
-    private void nappulaSoiNappulan(Nappula syoja, Nappula syoty)
+    public void nappulaSoiNappulan(Nappula syoja, Nappula syoty)
     {
         syoty.nappulaKuoli();
         //TODO?
     }
+    /**
+     * onko ruutu uhattu
+     * @param puoli      puoli jota uhataan, puoli == true(valkoinen) => palauttaa uhkaako musta ruutua
+     * @param sijaintiX  ruudun sijainti
+     * @param sijaintiY
+     * @return 
+     */
     public boolean onkoUhattu(boolean puoli, int sijaintiX, int sijaintiY)
     {
-        //TODO
-        return false;
+        if (uhkauksetLaskettavaUudestaan)
+        {
+            laskeUhatutRuudut();
+        }
+        if (puoli)
+        {
+            return mustaUhkaa[sijaintiY][sijaintiX];
+        }
+        else
+        {
+            return valkoinenUhkaa[sijaintiY][sijaintiX];
+        }
+    }
+    /**
+     * laskee mitä ruutuja musta ja valkoinen uhkaavat
+     */
+    private void laskeUhatutRuudut()
+    {
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                mustaUhkaa[y][x] = false;
+                valkoinenUhkaa[y][x] = false;
+            }
+        }
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                if (nappulaTassa[y][x] != null)
+                {
+                    boolean[][] uhkaa = nappulaTassa[y][x].uhatutRuudut(this);
+                    for (int yy = 0; yy < 8; yy++)
+                    {
+                        for (int xx = 0; xx < 8; xx++)
+                        {
+                            if (uhkaa[yy][xx])
+                            {
+                                if (nappulaTassa[y][x].puoli)
+                                {
+                                    valkoinenUhkaa[yy][xx] = true;
+                                }
+                                else
+                                {
+                                    mustaUhkaa[yy][xx] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        uhkauksetLaskettavaUudestaan = false;
     }
 }

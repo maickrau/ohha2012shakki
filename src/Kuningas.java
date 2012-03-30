@@ -4,16 +4,19 @@ public class Kuningas extends Nappula
     /**
      * jos nappula on liikkunut, tornitus ei ole mahdollista
      */
-    boolean liikkunut;
+    public boolean liikkunut;
+    private boolean[][] uhatutRuudut;
     public Kuningas(boolean puoli)
     {
         super(puoli);
         liikkunut = false;
+        uhatutRuudut = new boolean[8][8];
     }
     public Kuningas(boolean puoli, int sijaintiX, int sijaintiY)
     {
         super(puoli, sijaintiX, sijaintiY);
         liikkunut = false;
+        uhatutRuudut = new boolean[8][8];
     }
     @Override
     public void nappulaSiirtyi(PeliLauta lauta, int sijaintiX, int sijaintiY)
@@ -64,6 +67,22 @@ public class Kuningas extends Nappula
         }
         tarkistaTornitus(lauta);
         return mahdollisetSiirrot;
+    }
+    @Override
+    public boolean[][] uhatutRuudut(PeliLauta lauta)
+    {
+        for (int x = 0; x < 8; x++)
+        {
+            for (int y = 0; y < 8; y++)
+            {
+                uhatutRuudut[y][x] = false;
+                if (Math.abs(x-sijaintiX) <= 1 && Math.abs(y-sijaintiY) <= 1 && (x != sijaintiX || y != sijaintiY))
+                {
+                    uhatutRuudut[y][x] = true;
+                }
+            }
+        }
+        return uhatutRuudut;
     }
     /**
      * tarkistaa onko tornitus mahdollista ja päivittää sen mahdollisetSiirrot[][] -taulukkoon

@@ -34,14 +34,25 @@ abstract public class Nappula
      * @param lauta
      * @return      mahdollisetSiirrot[][] -taulukko
      */
-    abstract boolean[][] mahdollisetSiirrot(PeliLauta lauta);
+    public abstract boolean[][] mahdollisetSiirrot(PeliLauta lauta);
+    /**
+     * laskee ruudut joita uhataan, sama kuin mahdollisetSiirrot paitsi kuninkaalla joka voi uhata
+     * ruutuja ilman että voi siirtyä niihin (vihollinen uhkaa samoja ruutuja)
+     * ja sotilas joka uhkaa vinoon
+     * @param lauta
+     * @return      uhatut ruudut
+     */
+    public boolean[][] uhatutRuudut(PeliLauta lauta)
+    {
+        return mahdollisetSiirrot(lauta);
+    }
     /**
      * Siirtää nappulaa laudalla
      * @param lauta
      * @param sijaintiX
      * @param sijaintiY 
      */
-    void nappulaSiirtyi(PeliLauta lauta, int sijaintiX, int sijaintiY)
+    public void nappulaSiirtyi(PeliLauta lauta, int sijaintiX, int sijaintiY)
     {
         lauta.nappulaTassa[this.sijaintiY][this.sijaintiX] = null;
         this.sijaintiX = sijaintiX;

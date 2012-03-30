@@ -16,7 +16,7 @@ abstract public class SuoraanMenevaNappula extends Nappula {
      * @param dx    suunta
      * @param dy 
      */
-    void katsoSuunta(PeliLauta lauta, int dx, int dy)
+    public void katsoSuunta(PeliLauta lauta, int dx, int dy)
     {
         int x = sijaintiX+dx;
         int y = sijaintiY+dy;

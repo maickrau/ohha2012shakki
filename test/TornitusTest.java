@@ -93,16 +93,21 @@ public class TornitusTest {
         assertFalse(kuningas.mahdollisetSiirrot(lauta)[0][2]);
         assertFalse(kuningas.mahdollisetSiirrot(lauta)[0][6]);
     }
-    /*
+    
     @Test
     public void eiVoiTornittaaKunKuningasUhattu()
     {
-        //TODO
+        Hevonen heppa = (Hevonen)lauta.asetaNappula(new Hevonen(false), 5, 2);
+        assertTrue(heppa.uhatutRuudut(lauta)[kuningas.sijaintiY][kuningas.sijaintiX]);
+        assertFalse(kuningas.mahdollisetSiirrot(lauta)[0][2]);
+        assertFalse(kuningas.mahdollisetSiirrot(lauta)[0][6]);
     }
     @Test
     public void eiVoiTornittaaKunReittiUhattu()
     {
-        //TODO
+        lauta.asetaNappula(new Hevonen(false), 4, 2);
+        assertFalse(kuningas.mahdollisetSiirrot(lauta)[0][2]);
+        assertFalse(kuningas.mahdollisetSiirrot(lauta)[0][6]);
     }
-    */
+    
 }
