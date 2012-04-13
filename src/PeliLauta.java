@@ -8,8 +8,11 @@ public class PeliLauta
      * musta yläriviltä (kuningas on nappula[7][4]
      */
     public Nappula[][] nappulaTassa;
-    private Nappula valkoisenKuningas;
-    private Nappula mustanKuningas;
+    public Nappula valkoisenKuningas;
+    public Nappula mustanKuningas;
+    /**
+     * ruudut joita musta/valkoinen uhkaa
+     */
     private boolean[][] mustaUhkaa;
     private boolean[][] valkoinenUhkaa;
     private boolean uhkauksetLaskettavaUudestaan;
@@ -66,6 +69,79 @@ public class PeliLauta
             return true;
         }
         return false;
+    }
+    /**
+     * Tarkistaa onko matti
+     * @return 
+     */
+    public boolean onkoMatti()
+    {
+        boolean puoli = kummanVuoro;
+        if (!kuningasUhattu(puoli))
+        {
+            return false;
+        }
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                if (nappulaTassa[y][x] != null)
+                {
+                    if (nappulaTassa[y][x].puoli == puoli)
+                    {
+                        boolean[][] mahdollisetSiirrot = nappulaTassa[y][x].mahdollisetSiirrot(this);
+                        for (int yy = 0; yy < 8; yy++)
+                        {
+                            for (int xx = 0; xx < 8; xx++)
+                            {
+                                if (mahdollisetSiirrot[yy][xx])
+                                {
+                                    tallennaLauta("temp2.txt");
+                                    pelaaVuoro(x, y, xx, yy);
+                                    if (!kuningasUhattu(puoli))
+                                    {
+                                        lataaLauta("temp2.txt");
+                                        return false;
+                                    }
+                                    lataaLauta("temp2.txt");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * Uhataanko kuningasta
+     * @param puoli  kuningas jota uhataan, true kysyy uhataanko valkoista kuningasta
+     * @return       uhataanko kuningasta
+     */
+    public boolean kuningasUhattu(boolean puoli)
+    {
+        if (puoli)
+        {
+            if (valkoisenKuningas.sijaintiX != -10 && valkoisenKuningas.sijaintiY != -10)
+            {
+                if (onkoUhattu(puoli, valkoisenKuningas.sijaintiX, valkoisenKuningas.sijaintiY))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+        {
+            if (mustanKuningas.sijaintiX != -10 && mustanKuningas.sijaintiY != -10)
+            {
+                if (onkoUhattu(puoli, mustanKuningas.sijaintiX, mustanKuningas.sijaintiY))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
     /**
      * Pelaaja siirtää nappulaa, voi siirtää vain omalla vuorollaan
@@ -130,6 +206,11 @@ public class PeliLauta
         viimeSiirtoOliSotilaanTupla = 255;
         laskeUhatutRuudut();
     }
+    /**
+     * Tallentaa laudan tiedostolle
+     * @param polku  tiedosto
+     * @return       onnistuiko
+     */
     public boolean tallennaLauta(String polku)
     {
         File tiedosto = new File(polku);
@@ -217,6 +298,11 @@ public class PeliLauta
             return false;
         }
     }
+    /**
+     * Lataa laudan tiedostolta
+     * @param polku tiedosto
+     * @return      onnistuiko
+     */
     public boolean lataaLauta(String polku)
     {
         File tiedosto = new File(polku);
@@ -224,6 +310,7 @@ public class PeliLauta
         {
             return false;
         }
+        uhkauksetLaskettavaUudestaan = true;
         FileInputStream in;
         try
         {
@@ -242,6 +329,11 @@ public class PeliLauta
             {
                 for (int x = 0; x < 8; x++)
                 {
+                    if (nappulaTassa[y][x] != null)
+                    {
+                        nappulaTassa[y][x].nappulaKuoli(this);
+                    }
+//                    nappulaTassa[y][x] = null;
                     testi = (char)in.read();
                     if (testi != 'n')
                     {
@@ -257,6 +349,14 @@ public class PeliLauta
                             if ((char)in.read() == 'k')
                             {
                                 ((Kuningas)uusNappula).liikkunut = true;
+                            }
+                            if (puoli)
+                            {
+                                valkoisenKuningas = uusNappula;
+                            }
+                            else
+                            {
+                                mustanKuningas = uusNappula;
                             }
                         }
                         if (testi == 'T')
@@ -281,6 +381,12 @@ public class PeliLauta
             return false;
         }
     }
+    /**
+     * tallennuksessa/latauksessa käytetty, muuttaa merkin nappulaksi
+     * @param tama    merkki
+     * @param puoli   kumman puolen nappula
+     * @return        nappula
+     */
     private Nappula charinNappula(char tama, boolean puoli)
     {
         if (tama == 'x' || tama == '?')
@@ -313,6 +419,11 @@ public class PeliLauta
         }
         return null;
     }
+    /**
+     * tallennuksessa/latauksessa käytetty, muuttaa nappulan merkiksi
+     * @param tama   nappula
+     * @return       merkki
+     */
     private char nappulaTyypinChari(Nappula tama)
     {
         if (tama == null)
