@@ -34,10 +34,6 @@ public class Sotilas extends Nappula {
         this.sijaintiX = sijaintiX;
         this.sijaintiY = sijaintiY;
         lauta.nappulaTassa[this.sijaintiY][this.sijaintiX] = this;
-        if ((this.sijaintiY == 7 && puoli) || (this.sijaintiY == 0 && !puoli))
-        {
-            //TODO: ylennys
-        }
     }
     @Override
     public boolean[][] mahdollisetSiirrot(PeliLauta lauta)
@@ -131,13 +127,16 @@ public class Sotilas extends Nappula {
         {
             suunta = -1;
         }
-        if (sijaintiX > 0)
+        if (sijaintiY+suunta >= 0 && sijaintiY+suunta < 8)
         {
-            uhatutRuudut[sijaintiY+suunta][sijaintiX-1] = true;
-        }
-        if (sijaintiX < 7)
-        {
-            uhatutRuudut[sijaintiY+suunta][sijaintiX+1] = true;
+            if (sijaintiX > 0)
+            {
+                uhatutRuudut[sijaintiY+suunta][sijaintiX-1] = true;
+            }
+            if (sijaintiX < 7)
+            {
+                uhatutRuudut[sijaintiY+suunta][sijaintiX+1] = true;
+            }
         }
         return uhatutRuudut;
     }

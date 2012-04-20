@@ -29,27 +29,47 @@ public class GUI {
     {
         lauta.tallennaLauta("temp.txt");
         lauta.pelaaVuoro(vanhaX, vanhaY, uusX, uusY);
-        naytaTavanLauta();
         if (lauta.kuningasUhattu(!lauta.kummanVuoro))
         {
             viesti("Ei voi siirtää siihen, kuningas kuolee!");
             lauta.lataaLauta("temp.txt");
-            naytaTavanLauta();
         }
-        else
+        if (!voikoYlentaa())
         {
-            if (lauta.onkoMatti())
-            {
-                viesti("Matti!");
-                peliLoppui();
-            }
-            else if (lauta.kuningasUhattu(lauta.kummanVuoro))
-            {
-                viesti("Shakki.");
-            }
+            uusiVuoroAlkaa();
         }
     }
-    public void peliLoppui()
+    /**
+     * tarkistaa voiko sotilaita ylentää ja tekee ylennysdialogin jos voi
+     * @return  true jos voi
+     */
+    private boolean voikoYlentaa()
+    {
+        for (int x = 0; x < 8; x++)
+        {
+            if (lauta.nappulaTassa[0][x] != null)
+            {
+                if (lauta.nappulaTassa[0][x] instanceof Sotilas)
+                {
+                    teeYlennysDialogi(x, 0, lauta.nappulaTassa[0][x].puoli);
+                    return true;
+                }
+            }
+            if (lauta.nappulaTassa[7][x] != null)
+            {
+                if (lauta.nappulaTassa[7][x] instanceof Sotilas)
+                {
+                    teeYlennysDialogi(x, 7, lauta.nappulaTassa[7][x].puoli);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * estää klikkaamasta nappuloita
+     */
+    private void pysaytaPeli()
     {
         for (int y = 0; y < 8; y++)
         {
@@ -58,6 +78,101 @@ public class GUI {
                 ruudut[y][x].setEnabled(false);
             }
         }
+    }
+    /**
+     * tekee dialogin sotilaan ylennykselle
+     * @param sijaintiX sotilaan sijainti
+     * @param sijaintiY
+     * @param puoli     sotilaan puoli
+     */
+    public void teeYlennysDialogi(int sijaintiX, int sijaintiY, boolean puoli)
+    {
+        int kuvanPuoli = 0;
+        if (!puoli)
+        {
+            kuvanPuoli = 1;
+        }
+        JFrame ylennysFrame = new JFrame();
+        ylennysFrame.setLayout(new BorderLayout());
+        Container ylennysContainer = new Container();
+        ylennysContainer.setLayout(new GridLayout(1, 4));
+        ylennysContainer.setSize(400, 100);
+        JLabel ylennysTeksti = new JLabel();
+        JButton ylennaKuningattareksi = new JButton();
+        ylennaKuningattareksi.setIcon(kuningatarKuva[kuvanPuoli]);
+        ylennaKuningattareksi.setText("");
+        ylennaKuningattareksi.addActionListener(new YlennysListener(this, sijaintiX, sijaintiY, 0, ylennysFrame));
+        JButton ylennaLahetiksi = new JButton();
+        ylennaLahetiksi.setIcon(lahettiKuva[kuvanPuoli]);
+        ylennaLahetiksi.setText("");
+        ylennaLahetiksi.addActionListener(new YlennysListener(this, sijaintiX, sijaintiY, 1, ylennysFrame));
+        JButton ylennaHevoseksi = new JButton();
+        ylennaHevoseksi.setIcon(hevonenKuva[kuvanPuoli]);
+        ylennaHevoseksi.setText("");
+        ylennaHevoseksi.addActionListener(new YlennysListener(this, sijaintiX, sijaintiY, 2, ylennysFrame));
+        JButton ylennaTorniksi = new JButton();
+        ylennaTorniksi.setIcon(torniKuva[kuvanPuoli]);
+        ylennaTorniksi.setText("");
+        ylennaTorniksi.addActionListener(new YlennysListener(this, sijaintiX, sijaintiY, 3, ylennysFrame));
+        ylennysFrame.setSize(400, 150);
+        ylennysTeksti.setText("Ylennä nappula");
+        ylennysFrame.add(ylennysTeksti, BorderLayout.NORTH);
+        ylennysContainer.add(ylennaKuningattareksi);
+        ylennysContainer.add(ylennaLahetiksi);
+        ylennysContainer.add(ylennaHevoseksi);
+        ylennysContainer.add(ylennaTorniksi);
+        ylennysFrame.add(ylennysContainer, BorderLayout.SOUTH);
+        ylennysFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        ylennysFrame.setVisible(true);
+        ylennysFrame.addWindowListener(new YlennyksenSulkijanListener(this, sijaintiX, sijaintiY, puoli));
+        paivitaKuvat();
+        pysaytaPeli();
+    }
+    /**
+     * antaa ennen siirtoa tarvittavat infot
+     */
+    private void uusiVuoroAlkaa()
+    {
+        lauta.laskeUhatutRuudut();
+        naytaTavanLauta();
+        if (lauta.onkoMatti())
+        {
+            viesti("Matti!");
+            pysaytaPeli();
+        }
+        else if (lauta.kuningasUhattu(lauta.kummanVuoro))
+        {
+            viesti("Shakki.");
+        }
+    }
+    /**
+     * ylentää sotilaan
+     * @param sijaintiX sotilaan sijainti
+     * @param sijaintiY 
+     * @param uusiNappula nappula johon ylennetään
+     */
+    public void ylennaNappula(int sijaintiX, int sijaintiY, int uusiNappula)
+    {
+        boolean puoli = lauta.nappulaTassa[sijaintiY][sijaintiX].puoli;
+        lauta.nappulaTassa[sijaintiY][sijaintiX].nappulaKuoli(lauta);
+        if (uusiNappula == 0)
+        {
+            lauta.asetaNappula(new Kuningatar(puoli), sijaintiX, sijaintiY);
+        }
+        else if (uusiNappula == 1)
+        {
+            lauta.asetaNappula(new Lahetti(puoli), sijaintiX, sijaintiY);
+        }
+        else if (uusiNappula == 2)
+        {
+            lauta.asetaNappula(new Hevonen(puoli), sijaintiX, sijaintiY);
+        }
+        else if (uusiNappula == 3)
+        {
+            lauta.asetaNappula(new Torni(puoli), sijaintiX, sijaintiY);
+        }
+        lauta.laskeUhatutRuudut();
+        uusiVuoroAlkaa();
     }
     /**
      * antaa viestin uudessa ikkunassa
@@ -74,7 +189,7 @@ public class GUI {
         viestiFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         viestiFrame.setVisible(true);
     }
-    public void lataaKuvat()
+    private void lataaKuvat()
     {
         kuningasKuva = new ImageIcon[2];
         kuningatarKuva = new ImageIcon[2];
@@ -117,7 +232,7 @@ public class GUI {
         }
         paivitaKuvat();
     }
-    public void paivitaKuvat()
+    private void paivitaKuvat()
     {
         for (int y = 0; y < 8; y++)
         {
@@ -215,7 +330,7 @@ public class GUI {
         kokoFrame.setVisible(true);
     }
     /**
-     * oikeassa reunassa olevat lata, tallenna, lopeta
+     * oikeassa reunassa olevat lataa, tallenna, lopeta
      * @return 
      */
     private Container teeNapitContainer()
@@ -236,7 +351,7 @@ public class GUI {
         return napitContaineri;
     }
     /**
-     * lauta joka näkyy
+     * vasemmalla oleva 8x8 ruudukko jossa nappulat näkyy
      * @return 
      */
     private Container teeLautaContainer()

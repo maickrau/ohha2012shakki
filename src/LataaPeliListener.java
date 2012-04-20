@@ -1,5 +1,8 @@
 import java.awt.event.*;
 
+/**
+ * listeneri napille joka lataa pelin
+ */
 public class LataaPeliListener implements ActionListener {
     GUI omaGUI;
     

@@ -15,6 +15,9 @@ public class PeliLauta
      */
     private boolean[][] mustaUhkaa;
     private boolean[][] valkoinenUhkaa;
+    /**
+     * tarvitseeko laskea uhkaukset uudestaan, [0] on tarvitseeko laskea ruudut joissa mustaa uhataan
+     */
     private boolean uhkauksetLaskettavaUudestaan;
     /**
      * true on valkoisen vuoro, false mustan
@@ -72,7 +75,7 @@ public class PeliLauta
     }
     /**
      * Tarkistaa onko matti
-     * @return 
+     * @return onko matti
      */
     public boolean onkoMatti()
     {
@@ -81,6 +84,7 @@ public class PeliLauta
         {
             return false;
         }
+        tallennaLauta("temp2.txt");
         for (int y = 0; y < 8; y++)
         {
             for (int x = 0; x < 8; x++)
@@ -96,7 +100,6 @@ public class PeliLauta
                             {
                                 if (mahdollisetSiirrot[yy][xx])
                                 {
-                                    tallennaLauta("temp2.txt");
                                     pelaaVuoro(x, y, xx, yy);
                                     if (!kuningasUhattu(puoli))
                                     {
@@ -473,7 +476,6 @@ public class PeliLauta
     public void nappulaSoiNappulan(Nappula syoja, Nappula syoty)
     {
         syoty.nappulaKuoli(this);
-        //TODO?
     }
     /**
      * onko ruutu uhattu
@@ -498,9 +500,10 @@ public class PeliLauta
         }
     }
     /**
-     * laskee mitä ruutuja musta ja valkoinen uhkaavat
+     * laskee ruudut joita uhataan
+     * @param puoli puoli jota uhataan, puoli == true(valkoinen) => laskee ruudut joita musta uhkaa
      */
-    private void laskeUhatutRuudut()
+    public void laskeUhatutRuudut()
     {
         for (int y = 0; y < 8; y++)
         {
