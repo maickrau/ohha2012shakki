@@ -107,6 +107,7 @@ public class PeliLauta
                                         return false;
                                     }
                                     lataaLauta("temp2.txt");
+                                    mahdollisetSiirrot = nappulaTassa[y][x].mahdollisetSiirrot(this);
                                 }
                             }
                         }
